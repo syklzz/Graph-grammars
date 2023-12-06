@@ -1,6 +1,8 @@
 from itertools import combinations, permutations
 import networkx as nx
 
+from model.node import Node
+
 
 def p1(graph):
     subgraph = find_isomorphic_subgraph(graph)
@@ -39,16 +41,35 @@ def map_nodes_to_ids(nodes):
 
 
 def map_edges_to_ids(edges, nodes):
-    return list(map(lambda edge: (nodes.index(edge[0]), nodes.index(edge[1])), edges))
+    return list(map(lambda edge: (nodes.index(edge.n1), nodes.index(edge.n2)), edges))
 
 
 def validate_edges(edges, nodes):
     for edge in edges:
-        if edge[0] not in nodes or edge[1] not in nodes:
+        if edge.n1 not in nodes or edge.n2 not in nodes:
             return False
     return True
+
 
 def apply_production(graph, subgraph):
     square, nodes, edges = subgraph
 
+    graph.squares.remove(square)
 
+    middle_node = Node(calculate_x(nodes), calculate_y(nodes), 0, len(graph.nodes))
+
+    for edge in edges:
+        edge_nodes = [edge.n1, edge.n2]
+        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), -edge.b, len(graph.nodes))
+        graph.add_nodes(new_node)
+        graph.add_node_on_edge(node, edge)
+        graph.add_square()
+
+
+
+def calculate_x(nodes):
+    return sum(list(map(lambda node: node.x, nodes))) / len(nodes)
+
+
+def calculate_y(nodes):
+    return sum(list(map(lambda node: node.y, nodes))) / len(nodes)

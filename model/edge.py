@@ -7,15 +7,17 @@ class Label:
 
 
 class Edge:
-    def __init__(self, n1: Node, n2: Node):
+    def __init__(self, n1: Node, n2: Node, b):
         self.n1 = n1
         self.n2 = n2
         self.label = Label.E
+        self.b = b
 
 
 class Square:
-    def __init__(self, nodes):
+    def __init__(self, nodes, r):
         self.nodes = nodes
+        self.r = r
         self.label = Label.Q
         x = 0
         y = 0
