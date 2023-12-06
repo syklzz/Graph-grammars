@@ -1,6 +1,7 @@
 from itertools import combinations, permutations
 import networkx as nx
 
+from model.edge import Edge, Label, Square
 from model.node import Node
 
 
@@ -53,18 +54,29 @@ def validate_edges(edges, nodes):
 
 def apply_production(graph, subgraph):
     square, nodes, edges = subgraph
-
     graph.squares.remove(square)
-
     middle_node = Node(calculate_x(nodes), calculate_y(nodes), 0, len(graph.nodes))
 
+    new_squares = {}
+    for node in nodes:
+        new_squares[node.id] = [node, middle_node]
+
     for edge in edges:
+        graph.edges.remove(edge)
+
         edge_nodes = [edge.n1, edge.n2]
         new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), -edge.b, len(graph.nodes))
-        graph.add_nodes(new_node)
-        graph.add_node_on_edge(node, edge)
-        graph.add_square()
+        graph.add_node(new_node)
 
+        graph.add_edge(Edge(edge.n1, new_node, edge.b))
+        graph.add_edge(Edge(edge.n2, new_node, edge.b))
+        graph.add_edge(Edge(middle_node, new_node, Label.E))
+
+        new_squares[edge.n1.id].append(new_node)
+        new_squares[edge.n2.id].append(new_node)
+
+    for square_nodes in new_squares:
+        graph.add_square(Square(square_nodes, 0))
 
 
 def calculate_x(nodes):

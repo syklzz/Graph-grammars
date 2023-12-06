@@ -18,8 +18,8 @@ class Graph:
         for node in nodes:
             self.add_node(node)
 
-    def add_node(self, vertex):
-        self.nodes.append(vertex)
+    def add_node(self, node):
+        self.nodes.append(node)
 
     def add_square(self, square):
         self.squares.append(square)
