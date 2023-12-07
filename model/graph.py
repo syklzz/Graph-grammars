@@ -1,7 +1,5 @@
 import networkx as nx
 
-from model.edge import Label
-
 import matplotlib.pyplot as plt
 
 
@@ -28,28 +26,48 @@ class Graph:
         graph_nx = nx.Graph()
         node_labels = {}
         node_colors = []
+        positions = {}
+        edge_labels = {}
+        red_edges = set()
 
         for node in self.nodes:
             graph_nx.add_node(node)
-            node_labels[node] = 'N'
+            node_labels[node] = f"id={node.id}\nh={node.h}"
+            positions[node] = (node.x, node.y)
             node_colors.append('lightblue')
 
-        edge_colors = []
         for edge in self.edges:
             graph_nx.add_edge(edge.n1, edge.n2)
-            edge_colors.append('blue' if edge.label == Label.E else 'red')
+            edge_labels[(edge.n1, edge.n2)] = f"B={edge.b}"
+
         for square in self.squares:
-            node_labels[square.central_node] = 'Q'
-            node_colors.append('red')
             graph_nx.add_node(square.central_node)
+            node_labels[square.central_node] = f"Q\nr={square.r}"
+            positions[square.central_node] = (square.central_node.x, square.central_node.y)
+            node_colors.append('red')
 
             for node in square.nodes:
                 graph_nx.add_edge(node, square.central_node)
-                edge_colors.append('red')
+                red_edges.add((node, square.central_node))
+                red_edges.add((square.central_node, node))
 
-        pos = nx.spring_layout(graph_nx)
-        nx.draw_networkx_nodes(graph_nx, pos, node_color=node_colors, node_size=500)
-        nx.draw_networkx_edges(graph_nx, pos, edge_color=edge_colors)
-        nx.draw_networkx_labels(graph_nx, pos, labels=node_labels, font_size=15)
+        edge_colors = ['red' if (u, v) in red_edges or (v, u) in red_edges else 'blue' for u, v in graph_nx.edges()]
+
+        # Draw the graph
+        nx.draw_networkx_nodes(graph_nx, positions, node_color=node_colors, node_size=500)
+        nx.draw_networkx_edges(graph_nx, positions, edge_color=edge_colors)
+
+        nx.draw_networkx_labels(graph_nx,
+                                positions,
+                                labels=node_labels,
+                                font_size=10,
+                                font_color='black',
+                                verticalalignment='center')
+
+        nx.draw_networkx_edge_labels(graph_nx, positions, edge_labels=edge_labels, font_color='darkblue')
 
         plt.show()
+
+
+
+
