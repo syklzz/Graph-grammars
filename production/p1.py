@@ -3,6 +3,7 @@ import networkx as nx
 
 from model.edge import Edge, Label, Square
 from model.node import Node
+from utils.common import calculate_x, calculate_y
 
 
 def p1(graph):
@@ -14,22 +15,32 @@ def p1(graph):
 def find_isomorphic_subgraph(graph):
     for square in graph.squares:
         for edges in list(combinations(graph.edges, 4)):
-            for nodes in list(permutations(square.nodes)):
-                subgraph = create_subgraph(nodes, edges, square)
-                if subgraph is not None and nx.is_isomorphic(subgraph, create_base_graph()):
-                    return square, nodes, edges
+            for nodes_order in list(permutations(square.nodes)):
+                subgraph = create_subgraph(nodes_order, edges)
+                if validate_attributes(nodes_order, square) and subgraph is not None \
+                        and nx.is_isomorphic(subgraph, create_base_graph()):
+                    return square, edges
     return None
 
 
-def create_subgraph(nodes, edges, square):
-    if not validate_edges(edges, nodes):
+def validate_attributes(nodes, square):
+    for node in nodes:
+        if node.h != 0:
+            return False
+    if square.r != 1:
+        return False
+    return True
+
+
+def create_subgraph(nodes_order, edges):
+    if not validate_edges(edges, nodes_order):
         return None
     subgraph = nx.Graph()
-    subgraph.add_nodes_from(map_nodes_to_ids(nodes))
-    subgraph.add_edges_from(map_edges_to_ids(edges, nodes))
-    subgraph.add_node(5)
-    for i in range(len(square.nodes)):
-        subgraph.add_edge(5, i)
+    subgraph.add_nodes_from(list(range(5)))
+    subgraph.add_edges_from(map_edges_to_ids(edges, nodes_order))
+    subgraph.add_node(4)
+    for i in range(len(nodes_order)):
+        subgraph.add_edge(4, i)
     return subgraph
 
 
@@ -38,10 +49,6 @@ def create_base_graph():
     graph.add_nodes_from(list(range(5)))
     graph.add_edges_from([(0, 1), (0, 2), (0, 4), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)])
     return graph
-
-
-def map_nodes_to_ids(nodes):
-    return list(range(len(nodes)))
 
 
 def map_edges_to_ids(edges, nodes):
@@ -56,19 +63,19 @@ def validate_edges(edges, nodes):
 
 
 def apply_production(graph, subgraph):
-    square, nodes, edges = subgraph
+    square, edges = subgraph
     graph.squares.remove(square)
-    middle_node = Node(calculate_x(nodes), calculate_y(nodes), 0, len(graph.nodes))
+    middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
 
     new_squares = {}
-    for node in nodes:
+    for node in square.nodes:
         new_squares[node.id] = [node, middle_node]
 
     for edge in edges:
         graph.edges.remove(edge)
 
         edge_nodes = [edge.n1, edge.n2]
-        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), -edge.b, len(graph.nodes))
+        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), 0 if edge.b == 1 else 1, len(graph.nodes))
         graph.add_node(new_node)
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
@@ -81,10 +88,3 @@ def apply_production(graph, subgraph):
     for square_nodes in new_squares.values():
         graph.add_square(Square(square_nodes, 0))
 
-
-def calculate_x(nodes):
-    return sum(list(map(lambda node: node.x, nodes))) / len(nodes)
-
-
-def calculate_y(nodes):
-    return sum(list(map(lambda node: node.y, nodes))) / len(nodes)
