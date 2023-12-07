@@ -1,6 +1,6 @@
 import networkx as nx
 
-from model.edge import Edge, Square, Label
+from model.edge import Label
 
 import matplotlib.pyplot as plt
 
@@ -23,17 +23,6 @@ class Graph:
 
     def add_square(self, square):
         self.squares.append(square)
-
-    def is_isomorphic_with(self, graph_to_compare):
-        self_nx = nx.Graph()
-        self_nx.add_nodes_from(self.nodes)
-        self_nx.add_edges_from(self.edges)
-
-        graph_to_compare_nx = nx.Graph()
-        graph_to_compare_nx.add_nodes_from(graph_to_compare.nodes)
-        graph_to_compare_nx.add_edges_from(graph_to_compare.edges)
-
-        return nx.is_isomorphic(self_nx, graph_to_compare_nx)
 
     def draw_graph(self):
         graph_nx = nx.Graph()
