@@ -15,18 +15,21 @@ def find_isomorphic_subgraph(graph):
     for square in graph.squares:
         for edges in list(combinations(graph.edges, 4)):
             for nodes in list(permutations(square.nodes)):
-                subgraph = create_subgraph(nodes, edges)
+                subgraph = create_subgraph(nodes, edges, square)
                 if subgraph is not None and nx.is_isomorphic(subgraph, create_base_graph()):
                     return square, nodes, edges
     return None
 
 
-def create_subgraph(nodes, edges):
-    if not validate_edges(nodes, edges):
+def create_subgraph(nodes, edges, square):
+    if not validate_edges(edges, nodes):
         return None
     subgraph = nx.Graph()
     subgraph.add_nodes_from(map_nodes_to_ids(nodes))
-    subgraph.add_edges_from(map_edges_to_ids(nodes, edges))
+    subgraph.add_edges_from(map_edges_to_ids(edges, nodes))
+    subgraph.add_node(5)
+    for i in range(len(square.nodes)):
+        subgraph.add_edge(5, i)
     return subgraph
 
 
@@ -75,7 +78,7 @@ def apply_production(graph, subgraph):
         new_squares[edge.n1.id].append(new_node)
         new_squares[edge.n2.id].append(new_node)
 
-    for square_nodes in new_squares:
+    for square_nodes in new_squares.values():
         graph.add_square(Square(square_nodes, 0))
 
 
