@@ -9,10 +9,10 @@ from production.p1 import p1
 def prepare_graph():
     graph = Graph()
 
-    node1 = Node(0, 0, 0, 1)
-    node2 = Node(0, 2, 0, 2)
-    node3 = Node(2, 2, 0, 3)
-    node4 = Node(2, 0, 0, 4)
+    node1 = Node(0, 0, 0, 0)
+    node2 = Node(0, 2, 0, 1)
+    node3 = Node(2, 2, 0, 2)
+    node4 = Node(2, 0, 0, 3)
     graph.add_nodes([node1, node2, node3, node4])
 
     graph.add_edge(Edge(node1, node2, 0))
@@ -37,4 +37,4 @@ class TestP1(unittest.TestCase):
         # graph.draw_graph()
         p1(graph)
         # graph.draw_graph()
-        #self.assertTrue(graph.equals(expected_graph()))
+        self.assertTrue(graph.equals(expected_graph()))

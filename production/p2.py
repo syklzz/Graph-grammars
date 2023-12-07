@@ -82,7 +82,9 @@ def add_node_to_square(squares, node_id, node):
 def apply_production(graph, subgraph):
     square, edges, hanging_node = subgraph
     graph.squares.remove(square)
+
     middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
+    graph.add_node(middle_node)
     graph.add_edge(Edge(middle_node, hanging_node, Label.E))
 
     edges_to_be_cut = []

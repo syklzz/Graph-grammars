@@ -65,7 +65,9 @@ def validate_edges(edges, nodes):
 def apply_production(graph, subgraph):
     square, edges = subgraph
     graph.squares.remove(square)
+
     middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
+    graph.add_node(middle_node)
 
     new_squares = {}
     for node in square.nodes:
