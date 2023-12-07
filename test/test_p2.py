@@ -34,7 +34,7 @@ class TestP2(unittest.TestCase):
 
     def test_production(self):
         graph = prepare_graph()
-        # graph.draw_graph()
+        graph.draw_graph()
         p2(graph)
-        # graph.draw_graph()
+        graph.draw_graph()
         self.assertTrue(graph.equals(expected_graph()))
