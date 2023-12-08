@@ -1,7 +1,7 @@
 from itertools import combinations
 import networkx as nx
 
-from model.edge import Square, Edge
+from model.edge import HyperEdge, Edge, Label
 from model.node import Node
 from utils.common import calculate_x, calculate_y
 
@@ -13,30 +13,31 @@ def p2(graph):
 
 
 def find_isomorphic_subgraph(graph):
-    for square in graph.squares:
-        for edges in list(combinations(graph.edges, 5)):
-            for hanging_node in graph.nodes:
-                if hanging_node not in square.nodes and validate_attributes(square, hanging_node) \
-                        and validate_edges(edges, square.nodes, hanging_node) \
-                        and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
-                    return square, edges, hanging_node
+    for hyper_edges in graph.hyper_edges:
+        if hyper_edges.label == Label.Q:
+            for edges in list(combinations(graph.edges, 5)):
+                for hanging_node in graph.nodes:
+                    if hanging_node not in hyper_edges.nodes and validate_attributes(hyper_edges, hanging_node) \
+                            and validate_edges(edges, hyper_edges.nodes, hanging_node) \
+                            and nx.is_isomorphic(create_subgraph(hyper_edges.nodes, edges), create_base_graph()):
+                        return hyper_edges, edges, hanging_node
     return None
 
 
-def validate_attributes(square, hanging_node):
-    for node in square.nodes:
+def validate_attributes(hyper_edge, hanging_node):
+    for node in hyper_edge.nodes:
         if node.h != 0:
             return False
-    if square.r != 1 or hanging_node.h != 1:
+    if hyper_edge.r != 1 or hanging_node.h != 1:
         return False
     return True
 
 
-def create_subgraph(square_nodes, edges):
+def create_subgraph(hyper_edge_nodes, edges):
     subgraph = nx.Graph()
     subgraph.add_nodes_from(list(range(6)))
-    subgraph.add_edges_from(map_edges_to_ids(edges, square_nodes))
-    for i in range(len(square_nodes)):
+    subgraph.add_edges_from(map_edges_to_ids(edges, hyper_edge_nodes))
+    for i in range(len(hyper_edge_nodes)):
         subgraph.add_edge(5, i)
     return subgraph
 
@@ -65,49 +66,49 @@ def validate_edges(edges, nodes, node):
     return True
 
 
-def add_node_to_square(squares, node_id, node):
-    if node_id not in squares:
-        squares[node_id] = [node]
-    elif node not in squares[node_id]:
-        squares[node_id].append(node)
+def add_node_to_hyper_edge(hyper_edges, node_id, node):
+    if node_id not in hyper_edges:
+        hyper_edges[node_id] = [node]
+    elif node not in hyper_edges[node_id]:
+        hyper_edges[node_id].append(node)
 
 
 def apply_production(graph, subgraph):
-    square, edges, hanging_node = subgraph
-    graph.squares.remove(square)
+    hyper_edge, edges, hanging_node = subgraph
+    graph.hyper_edges.remove(hyper_edge)
 
-    middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
+    middle_node = Node(calculate_x(hyper_edge.nodes), calculate_y(hyper_edge.nodes), 0)
     graph.add_node(middle_node)
     graph.add_edge(Edge(middle_node, hanging_node, 0))
 
     hanging_node.h = 0
 
     split_edges = []
-    new_squares = {}
+    new_hyper_edges = {}
     for edge in edges:
         if edge.n1 != hanging_node and edge.n2 != hanging_node:
             split_edges.append(edge)
-            add_node_to_square(new_squares, edge.n1.id, edge.n1)
-            add_node_to_square(new_squares, edge.n1.id, middle_node)
-            add_node_to_square(new_squares, edge.n2.id, edge.n2)
-            add_node_to_square(new_squares, edge.n2.id, middle_node)
+            add_node_to_hyper_edge(new_hyper_edges, edge.n1.id, edge.n1)
+            add_node_to_hyper_edge(new_hyper_edges, edge.n1.id, middle_node)
+            add_node_to_hyper_edge(new_hyper_edges, edge.n2.id, edge.n2)
+            add_node_to_hyper_edge(new_hyper_edges, edge.n2.id, middle_node)
         else:
             node = edge.n2 if edge.n1 == hanging_node else edge.n1
-            add_node_to_square(new_squares, node.id, hanging_node)
+            add_node_to_hyper_edge(new_hyper_edges, node.id, hanging_node)
 
     for edge in split_edges:
         graph.edges.remove(edge)
 
         edge_nodes = [edge.n1, edge.n2]
-        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), 0 if edge.b == 1 else 1, len(graph.nodes))
+        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), 0 if edge.b == 1 else 1)
         graph.add_node(new_node)
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
         graph.add_edge(Edge(edge.n2, new_node, edge.b))
         graph.add_edge(Edge(middle_node, new_node, 0))
 
-        new_squares[edge.n1.id].append(new_node)
-        new_squares[edge.n2.id].append(new_node)
+        new_hyper_edges[edge.n1.id].append(new_node)
+        new_hyper_edges[edge.n2.id].append(new_node)
 
-    for square_nodes in new_squares.values():
-        graph.add_square(Square(square_nodes, 0))
+    for hyper_edge_nodes in new_hyper_edges.values():
+        graph.add_hyper_edge(HyperEdge(hyper_edge_nodes, 0, Label.Q))

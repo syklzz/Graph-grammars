@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, x, y, h, id):
+    def __init__(self, x, y, h):
         self.x = x
         self.y = y
         self.h = h
-        self.id = id
+        self.id = None
 

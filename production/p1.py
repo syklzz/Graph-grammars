@@ -1,9 +1,9 @@
 from itertools import combinations
 import networkx as nx
 
-from model.edge import Edge, Square
+from model.edge import Edge, HyperEdge, Label
 from model.node import Node
-from utils.common import calculate_x, calculate_y
+from utils.common import calculate_x, calculate_y, map_edges_to_ids, map_nodes_to_ids
 
 
 def p1(graph):
@@ -13,29 +13,30 @@ def p1(graph):
 
 
 def find_isomorphic_subgraph(graph):
-    for square in graph.squares:
-        for edges in list(combinations(graph.edges, 4)):
-            if validate_edges(edges, square.nodes) and validate_attributes(square) \
-                    and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
-                return square, edges
+    for hyper_edge in graph.hyper_edges:
+        if hyper_edge.label == Label.Q:
+            for edges in list(combinations(graph.edges, 4)):
+                if validate_edges(edges, hyper_edge.nodes) and validate_attributes(hyper_edge) \
+                        and nx.is_isomorphic(create_subgraph(hyper_edge.nodes, edges), create_base_graph()):
+                    return hyper_edge, edges
     return None
 
 
-def validate_attributes(square):
-    for node in square.nodes:
+def validate_attributes(hyper_edge):
+    for node in hyper_edge.nodes:
         if node.h != 0:
             return False
-    if square.r != 1:
+    if hyper_edge.r != 1:
         return False
     return True
 
 
-def create_subgraph(square_nodes, edges):
+def create_subgraph(hyper_edge_nodes, edges):
     subgraph = nx.Graph()
-    subgraph.add_nodes_from(list(range(5)))
-    subgraph.add_edges_from(map_edges_to_ids(edges, square_nodes))
+    subgraph.add_nodes_from(map_nodes_to_ids(hyper_edge_nodes))
+    subgraph.add_edges_from(map_edges_to_ids(edges))
     subgraph.add_node(4)
-    for i in range(len(square_nodes)):
+    for i in range(len(hyper_edge_nodes)):
         subgraph.add_edge(4, i)
     return subgraph
 
@@ -47,8 +48,8 @@ def create_base_graph():
     return graph
 
 
-def map_edges_to_ids(edges, nodes):
-    return list(map(lambda edge: (nodes.index(edge.n1), nodes.index(edge.n2)), edges))
+# def map_edges_to_ids(edges, nodes):
+#     return list(map(lambda edge: (nodes.index(edge.n1), nodes.index(edge.n2)), edges))
 
 
 def validate_edges(edges, nodes):
@@ -59,30 +60,30 @@ def validate_edges(edges, nodes):
 
 
 def apply_production(graph, subgraph):
-    square, edges = subgraph
-    graph.squares.remove(square)
+    hyper_edge, edges = subgraph
+    graph.hyper_edges.remove(hyper_edge)
 
-    middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
+    middle_node = Node(calculate_x(hyper_edge.nodes), calculate_y(hyper_edge.nodes), 0)
     graph.add_node(middle_node)
 
-    new_squares = {}
-    for node in square.nodes:
-        new_squares[node.id] = [node, middle_node]
+    new_hyper_edges = {}
+    for node in hyper_edge.nodes:
+        new_hyper_edges[node.id] = [node, middle_node]
 
     for edge in edges:
         graph.edges.remove(edge)
 
         edge_nodes = [edge.n1, edge.n2]
-        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), 0 if edge.b == 1 else 1, len(graph.nodes))
+        new_node = Node(calculate_x(edge_nodes), calculate_y(edge_nodes), 0 if edge.b == 1 else 1)
         graph.add_node(new_node)
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
         graph.add_edge(Edge(edge.n2, new_node, edge.b))
         graph.add_edge(Edge(middle_node, new_node, 0))
 
-        new_squares[edge.n1.id].append(new_node)
-        new_squares[edge.n2.id].append(new_node)
+        new_hyper_edges[edge.n1.id].append(new_node)
+        new_hyper_edges[edge.n2.id].append(new_node)
 
-    for square_nodes in new_squares.values():
-        graph.add_square(Square(square_nodes, 0))
+    for hyper_edges_nodes in new_hyper_edges.values():
+        graph.add_hyper_edge(HyperEdge(hyper_edges_nodes, 0, Label.Q))
 

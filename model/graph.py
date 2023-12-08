@@ -7,7 +7,8 @@ class Graph:
     def __init__(self):
         self.nodes = []
         self.edges = []
-        self.squares = []
+        self.hyper_edges = []
+        self.new_node_id = 0
 
     def add_edge(self, edge):
         self.edges.append(edge)
@@ -17,10 +18,12 @@ class Graph:
             self.add_node(node)
 
     def add_node(self, node):
+        node.id = self.new_node_id
         self.nodes.append(node)
+        self.new_node_id += 1
 
-    def add_square(self, square):
-        self.squares.append(square)
+    def add_hyper_edge(self, hyper_edge):
+        self.hyper_edges.append(hyper_edge)
 
     def draw_graph(self):
         graph_nx = nx.Graph()
@@ -40,16 +43,16 @@ class Graph:
             graph_nx.add_edge(edge.n1, edge.n2)
             edge_labels[(edge.n1, edge.n2)] = f"B={edge.b}"
 
-        for square in self.squares:
-            graph_nx.add_node(square.central_node)
-            node_labels[square.central_node] = f"Q\nr={square.r}"
-            positions[square.central_node] = (square.central_node.x, square.central_node.y)
+        for hyper_edge in self.hyper_edges:
+            graph_nx.add_node(hyper_edge.central_node)
+            node_labels[hyper_edge.central_node] = f"Q\nr={hyper_edge.r}"
+            positions[hyper_edge.central_node] = (hyper_edge.central_node.x, hyper_edge.central_node.y)
             node_colors.append('red')
 
-            for node in square.nodes:
-                graph_nx.add_edge(node, square.central_node)
-                red_edges.add((node, square.central_node))
-                red_edges.add((square.central_node, node))
+            for node in hyper_edge.nodes:
+                graph_nx.add_edge(node, hyper_edge.central_node)
+                red_edges.add((node, hyper_edge.central_node))
+                red_edges.add((hyper_edge.central_node, node))
 
         edge_colors = ['red' if (u, v) in red_edges or (v, u) in red_edges else 'blue' for u, v in graph_nx.edges()]
 

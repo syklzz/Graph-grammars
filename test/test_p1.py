@@ -1,95 +1,122 @@
 import unittest
 
-from model.edge import Edge, Square
 from model.graph import Graph
-from model.node import Node
 from production.p1 import p1
-
-
-def prepare_left_side_of_production():
-    graph = Graph()
-
-    node1 = Node(0, 0, 0, 0)
-    node2 = Node(0, 2, 0, 1)
-    node3 = Node(2, 2, 0, 2)
-    node4 = Node(2, 0, 0, 3)
-    graph.add_nodes([node1, node2, node3, node4])
-
-    graph.add_edge(Edge(node1, node2, 0))
-    graph.add_edge(Edge(node2, node3, 0))
-    graph.add_edge(Edge(node3, node4, 0))
-    graph.add_edge(Edge(node4, node1, 1))
-
-    graph.add_square(Square([node1, node2, node3, node4], 1))
-
-    return graph
-
-
-def prepare_complex_graph_with_match():
-    graph = Graph()
-
-    node1 = Node(0, 0, 0, 0)
-    node2 = Node(0, 2, 0, 1)
-    node3 = Node(2, 2, 0, 2)
-    node4 = Node(2, 0, 0, 3)
-    node5 = Node(1, -1, 1, 4)
-    node6 = Node(3, 0, 1, 5)
-    graph.add_nodes([node1, node2, node3, node4, node5, node6])
-
-    graph.add_edge(Edge(node1, node2, 0))
-    graph.add_edge(Edge(node2, node3, 0))
-    graph.add_edge(Edge(node3, node4, 0))
-    graph.add_edge(Edge(node4, node1, 0))
-    graph.add_edge(Edge(node1, node5, 0))
-    graph.add_edge(Edge(node5, node4, 1))
-    graph.add_edge(Edge(node6, node3, 1))
-    graph.add_edge(Edge(node6, node4, 1))
-
-    graph.add_square(Square([node1, node2, node3, node4], 1))
-
-    return graph
-
-
-def prepare_graph_with_no_match():
-    graph = Graph()
-
-    node1 = Node(0, 0, 0, 0)
-    node2 = Node(0, 2, 1, 1)
-    node3 = Node(2, 2, 0, 2)
-    node4 = Node(2, 0, 0, 3)
-    graph.add_nodes([node1, node2, node3, node4])
-
-    graph.add_edge(Edge(node1, node2, 0))
-    graph.add_edge(Edge(node2, node3, 0))
-    graph.add_edge(Edge(node3, node4, 0))
-
-    graph.add_square(Square([node1, node2, node3, node4], 1))
-
-    return graph
+from graphs.graphs_p1 import complex_graph_with_match, graph_with_no_match, graph_with_incorrect_hyper_edge_label, \
+    graph_with_incorrect_hyper_edge_attribute, graph_with_incorrect_hyper_edge_node_attribute
+from graphs.common import left_side_of_p1, left_side_of_p2
 
 
 class TestP1(unittest.TestCase):
 
-    def test_on_left_side_of_production(self):
-        graph = prepare_left_side_of_production()
+    def test_for_left_side_of_p1(self):
+        expected_nodes_size = 9
+        expected_edges_size = 12
+        expected_hyper_edges_size = 4
+
+        graph = left_side_of_p1()
         graph.draw_graph()
         p1(graph)
         graph.draw_graph()
 
-    def test_on_complex_graph_with_match(self):
-        graph = prepare_complex_graph_with_match()
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_complex_graph_with_match(self):
+        expected_nodes_size = 11
+        expected_edges_size = 16
+        expected_hyper_edges_size = 4
+
+        graph = complex_graph_with_match()
         graph.draw_graph()
         p1(graph)
         graph.draw_graph()
 
-    def test_on_graph_with_no_match(self):
-        graph = prepare_graph_with_no_match()
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_graph_with_no_match(self):
+        expected_nodes_size = 4
+        expected_edges_size = 3
+        expected_hyper_edges_size = 1
+
+        graph = graph_with_no_match()
         graph.draw_graph()
         p1(graph)
         graph.draw_graph()
 
-    def test_on_empty_graph(self):
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_empty_graph(self):
+        expected_nodes_size = 0
+        expected_edges_size = 0
+        expected_hyper_edges_size = 0
+
         graph = Graph()
         graph.draw_graph()
         p1(graph)
         graph.draw_graph()
+
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_left_side_of_p2(self):
+        expected_nodes_size = 5
+        expected_edges_size = 5
+        expected_hyper_edges_size = 1
+
+        graph = left_side_of_p2()
+        graph.draw_graph()
+        p1(graph)
+        graph.draw_graph()
+
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_graph_with_incorrect_hyper_edge_node_attribute(self):
+        expected_nodes_size = 4
+        expected_edges_size = 4
+        expected_hyper_edges_size = 1
+
+        graph = graph_with_incorrect_hyper_edge_node_attribute()
+        graph.draw_graph()
+        p1(graph)
+        graph.draw_graph()
+
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_graph_with_incorrect_hyper_edge_attribute(self):
+        expected_nodes_size = 4
+        expected_edges_size = 4
+        expected_hyper_edges_size = 1
+
+        graph = graph_with_incorrect_hyper_edge_attribute()
+        graph.draw_graph()
+        p1(graph)
+        graph.draw_graph()
+
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
+
+    def test_for_graph_with_incorrect_hyper_edge_label(self):
+        expected_nodes_size = 4
+        expected_edges_size = 4
+        expected_hyper_edges_size = 1
+
+        graph = graph_with_incorrect_hyper_edge_label()
+        graph.draw_graph()
+        p1(graph)
+        graph.draw_graph()
+
+        self.assertTrue(len(graph.nodes) == expected_nodes_size)
+        self.assertTrue(len(graph.edges) == expected_edges_size)
+        self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
