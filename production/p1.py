@@ -78,7 +78,7 @@ def apply_production(graph, subgraph):
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
         graph.add_edge(Edge(edge.n2, new_node, edge.b))
-        graph.add_edge(Edge(middle_node, new_node, None))
+        graph.add_edge(Edge(middle_node, new_node, 0))
 
         new_squares[edge.n1.id].append(new_node)
         new_squares[edge.n2.id].append(new_node)
