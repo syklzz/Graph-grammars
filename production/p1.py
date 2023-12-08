@@ -1,7 +1,7 @@
 from itertools import combinations, permutations
 import networkx as nx
 
-from model.edge import Edge, Label, Square
+from model.edge import Edge, Square
 from model.node import Node
 from utils.common import calculate_x, calculate_y
 
@@ -82,7 +82,7 @@ def apply_production(graph, subgraph):
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
         graph.add_edge(Edge(edge.n2, new_node, edge.b))
-        graph.add_edge(Edge(middle_node, new_node, Label.E))
+        graph.add_edge(Edge(middle_node, new_node, None))
 
         new_squares[edge.n1.id].append(new_node)
         new_squares[edge.n2.id].append(new_node)

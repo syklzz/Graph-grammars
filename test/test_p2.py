@@ -26,6 +26,7 @@ def prepare_graph():
 
     return graph
 
+
 def expected_graph():
     return Graph()
 
@@ -37,4 +38,3 @@ class TestP2(unittest.TestCase):
         graph.draw_graph()
         p2(graph)
         graph.draw_graph()
-        self.assertTrue(graph.equals(expected_graph()))

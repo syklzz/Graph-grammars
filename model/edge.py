@@ -1,4 +1,5 @@
 from model.node import Node
+from utils.common import calculate_x, calculate_y
 
 
 class Label:
@@ -19,11 +20,4 @@ class Square:
         self.nodes = nodes
         self.r = r
         self.label = Label.Q
-        x = 0
-        y = 0
-        for node in nodes:
-            x += node.x
-            y += node.y
-        x /= len(nodes)
-        y /= len(nodes)
-        self.central_node = Node(x, y, None, None)
+        self.central_node = Node(calculate_x(nodes), calculate_y(nodes), None, None)

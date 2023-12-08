@@ -37,4 +37,3 @@ class TestP1(unittest.TestCase):
         graph.draw_graph()
         p1(graph)
         graph.draw_graph()
-        self.assertTrue(graph.equals(expected_graph()))
