@@ -1,4 +1,4 @@
-from itertools import combinations, permutations
+from itertools import combinations
 import networkx as nx
 
 from model.edge import Edge, Square
@@ -15,16 +15,14 @@ def p1(graph):
 def find_isomorphic_subgraph(graph):
     for square in graph.squares:
         for edges in list(combinations(graph.edges, 4)):
-            for nodes_order in list(permutations(square.nodes)):
-                subgraph = create_subgraph(nodes_order, edges)
-                if validate_attributes(nodes_order, square) and subgraph is not None \
-                        and nx.is_isomorphic(subgraph, create_base_graph()):
-                    return square, edges
+            if validate_edges(edges, square.nodes) and validate_attributes(square) \
+                    and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
+                return square, edges
     return None
 
 
-def validate_attributes(nodes, square):
-    for node in nodes:
+def validate_attributes(square):
+    for node in square.nodes:
         if node.h != 0:
             return False
     if square.r != 1:
@@ -32,14 +30,12 @@ def validate_attributes(nodes, square):
     return True
 
 
-def create_subgraph(nodes_order, edges):
-    if not validate_edges(edges, nodes_order):
-        return None
+def create_subgraph(square_nodes, edges):
     subgraph = nx.Graph()
     subgraph.add_nodes_from(list(range(5)))
-    subgraph.add_edges_from(map_edges_to_ids(edges, nodes_order))
+    subgraph.add_edges_from(map_edges_to_ids(edges, square_nodes))
     subgraph.add_node(4)
-    for i in range(len(nodes_order)):
+    for i in range(len(square_nodes)):
         subgraph.add_edge(4, i)
     return subgraph
 

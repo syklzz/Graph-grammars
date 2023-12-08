@@ -1,4 +1,4 @@
-from itertools import combinations, permutations
+from itertools import combinations
 import networkx as nx
 
 from model.edge import Square, Edge
@@ -15,18 +15,16 @@ def p2(graph):
 def find_isomorphic_subgraph(graph):
     for square in graph.squares:
         for edges in list(combinations(graph.edges, 5)):
-            for nodes_order in list(permutations(square.nodes)):
-                for hanging_node in graph.nodes:
-                    if hanging_node not in nodes_order:
-                        subgraph = create_subgraph(nodes_order, edges, hanging_node)
-                        if validate_attributes(nodes_order, square, hanging_node) and subgraph is not None \
-                                and nx.is_isomorphic(subgraph, create_base_graph()):
-                            return square, edges, hanging_node
+            for hanging_node in graph.nodes:
+                if hanging_node not in square.nodes:
+                    if validate_attributes(square, hanging_node) and validate_edges(edges, square.nodes, hanging_node) \
+                            and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
+                        return square, edges, hanging_node
     return None
 
 
-def validate_attributes(nodes, square, hanging_node):
-    for node in nodes:
+def validate_attributes(square, hanging_node):
+    for node in square.nodes:
         if node.h != 0:
             return False
     if square.r != 1 or hanging_node.h != 1:
@@ -34,13 +32,11 @@ def validate_attributes(nodes, square, hanging_node):
     return True
 
 
-def create_subgraph(nodes_order, edges, hanging_node):
-    if not validate_edges(edges, nodes_order, hanging_node):
-        return None
+def create_subgraph(square_nodes, edges):
     subgraph = nx.Graph()
     subgraph.add_nodes_from(list(range(6)))
-    subgraph.add_edges_from(map_edges_to_ids(edges, nodes_order))
-    for i in range(len(nodes_order)):
+    subgraph.add_edges_from(map_edges_to_ids(edges, square_nodes))
+    for i in range(len(square_nodes)):
         subgraph.add_edge(5, i)
     return subgraph
 
@@ -72,11 +68,8 @@ def validate_edges(edges, nodes, node):
 def add_node_to_square(squares, node_id, node):
     if node_id not in squares:
         squares[node_id] = [node]
-    else:
-        if node not in squares[node_id]:
-            new_nodes = squares[node_id]
-            new_nodes.append(node)
-            squares[node_id] = new_nodes
+    elif node not in squares[node_id]:
+        squares[node_id].append(node)
 
 
 def apply_production(graph, subgraph):
@@ -85,26 +78,24 @@ def apply_production(graph, subgraph):
 
     middle_node = Node(calculate_x(square.nodes), calculate_y(square.nodes), 0, len(graph.nodes))
     graph.add_node(middle_node)
-    graph.add_edge(Edge(middle_node, hanging_node, None))
+    graph.add_edge(Edge(middle_node, hanging_node, 0))
 
     hanging_node.h = 0
 
-    edges_to_be_cut = []
+    split_edges = []
     new_squares = {}
     for edge in edges:
         if edge.n1 != hanging_node and edge.n2 != hanging_node:
-            edges_to_be_cut.append(edge)
+            split_edges.append(edge)
             add_node_to_square(new_squares, edge.n1.id, edge.n1)
             add_node_to_square(new_squares, edge.n1.id, middle_node)
             add_node_to_square(new_squares, edge.n2.id, edge.n2)
             add_node_to_square(new_squares, edge.n2.id, middle_node)
         else:
-            if edge.n1 == hanging_node:
-                add_node_to_square(new_squares, edge.n2.id, hanging_node)
-            else:
-                add_node_to_square(new_squares, edge.n1.id, hanging_node)
+            node = edge.n2 if edge.n1 == hanging_node else edge.n1
+            add_node_to_square(new_squares, node.id, hanging_node)
 
-    for edge in edges_to_be_cut:
+    for edge in split_edges:
         graph.edges.remove(edge)
 
         edge_nodes = [edge.n1, edge.n2]
@@ -113,7 +104,7 @@ def apply_production(graph, subgraph):
 
         graph.add_edge(Edge(edge.n1, new_node, edge.b))
         graph.add_edge(Edge(edge.n2, new_node, edge.b))
-        graph.add_edge(Edge(middle_node, new_node, None))
+        graph.add_edge(Edge(middle_node, new_node, 0))
 
         new_squares[edge.n1.id].append(new_node)
         new_squares[edge.n2.id].append(new_node)
