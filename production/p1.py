@@ -48,10 +48,6 @@ def create_base_graph():
     return graph
 
 
-# def map_edges_to_ids(edges, nodes):
-#     return list(map(lambda edge: (nodes.index(edge.n1), nodes.index(edge.n2)), edges))
-
-
 def validate_edges(edges, nodes):
     for edge in edges:
         if edge.n1 not in nodes or edge.n2 not in nodes:

@@ -3,7 +3,7 @@ import networkx as nx
 
 from model.edge import HyperEdge, Edge, Label
 from model.node import Node
-from utils.common import calculate_x, calculate_y
+from utils.common import calculate_x, calculate_y, map_nodes_to_ids, map_edges_to_ids
 
 
 def p2(graph):
@@ -35,8 +35,8 @@ def validate_attributes(hyper_edge, hanging_node):
 
 def create_subgraph(hyper_edge_nodes, edges):
     subgraph = nx.Graph()
-    subgraph.add_nodes_from(list(range(6)))
-    subgraph.add_edges_from(map_edges_to_ids(edges, hyper_edge_nodes))
+    subgraph.add_nodes_from(map_nodes_to_ids(hyper_edge_nodes))
+    subgraph.add_edges_from(map_edges_to_ids(edges))
     for i in range(len(hyper_edge_nodes)):
         subgraph.add_edge(5, i)
     return subgraph
@@ -47,14 +47,6 @@ def create_base_graph():
     graph.add_nodes_from(list(range(6)))
     graph.add_edges_from([(0, 1), (0, 3), (1, 2), (2, 5), (5, 3), (0, 4), (3, 4), (1, 4), (2, 4)])
     return graph
-
-
-def map_node_to_id(node, nodes):
-    return nodes.index(node) if node in nodes else 4
-
-
-def map_edges_to_ids(edges, nodes):
-    return list(map(lambda edge: (map_node_to_id(edge.n1, nodes), map_node_to_id(edge.n2, nodes)), edges))
 
 
 def validate_edges(edges, nodes, node):
