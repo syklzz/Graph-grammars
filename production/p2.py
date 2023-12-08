@@ -16,10 +16,10 @@ def find_isomorphic_subgraph(graph):
     for square in graph.squares:
         for edges in list(combinations(graph.edges, 5)):
             for hanging_node in graph.nodes:
-                if hanging_node not in square.nodes:
-                    if validate_attributes(square, hanging_node) and validate_edges(edges, square.nodes, hanging_node) \
-                            and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
-                        return square, edges, hanging_node
+                if hanging_node not in square.nodes and validate_attributes(square, hanging_node) \
+                        and validate_edges(edges, square.nodes, hanging_node) \
+                        and nx.is_isomorphic(create_subgraph(square.nodes, edges), create_base_graph()):
+                    return square, edges, hanging_node
     return None
 
 
