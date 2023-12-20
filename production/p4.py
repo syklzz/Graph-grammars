@@ -9,7 +9,7 @@ from utils.common import calculate_y, calculate_x
 
 def p4(graph: Graph) -> None:
     for hyper_edge in graph.hyper_edges:
-        if hyper_edge.r == 1 and check_if_all_nodes_h_0(hyper_edge.nodes):
+        if hyper_edge.r == 1 and hyper_edge.label == Label.Q and check_if_all_nodes_h_0(hyper_edge.nodes):
             neighbours_h1 = {}
 
             # finding all nodes with h1 that are neighbours to considered node
