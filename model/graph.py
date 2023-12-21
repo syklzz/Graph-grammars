@@ -5,6 +5,8 @@ import networkx as nx
 
 import matplotlib.pyplot as plt
 
+from utils.common import map_edges_to_ids, map_nodes_to_ids
+
 
 class Graph:
     def __init__(self):
@@ -40,7 +42,7 @@ class Graph:
             graph_nx.add_node(node)
             node_labels[node] = f"id={node.id}\nh={node.h}"
             positions[node] = (node.x, node.y)
-            node_colors.append('lightblue')
+            node_colors.append("lightblue")
 
         for edge in self.edges:
             graph_nx.add_edge(edge.n1, edge.n2)
@@ -54,30 +56,70 @@ class Graph:
             if hyper_edge.label == Label.P:
                 node_labels[hyper_edge.central_node] = f"P\nr={hyper_edge.r}"
             positions[hyper_edge.central_node] = (
-                hyper_edge.central_node.x, hyper_edge.central_node.y)
-            node_colors.append('red')
+                hyper_edge.central_node.x,
+                hyper_edge.central_node.y,
+            )
+            node_colors.append("red")
 
             for node in hyper_edge.nodes:
                 graph_nx.add_edge(node, hyper_edge.central_node)
                 red_edges.add((node, hyper_edge.central_node))
                 red_edges.add((hyper_edge.central_node, node))
 
-        edge_colors = ['red' if (u, v) in red_edges or (
-            v, u) in red_edges else 'blue' for u, v in graph_nx.edges()]
+        edge_colors = [
+            "red" if (u, v) in red_edges or (v, u) in red_edges else "blue"
+            for u, v in graph_nx.edges()
+        ]
 
         # Draw the graph
-        nx.draw_networkx_nodes(graph_nx, positions,
-                               node_color=node_colors, node_size=500)
+        plt.figure(figsize=(24, 18))
+
+        nx.draw_networkx_nodes(
+            graph_nx, positions, node_color=node_colors, node_size=500
+        )
         nx.draw_networkx_edges(graph_nx, positions, edge_color=edge_colors)
 
-        nx.draw_networkx_labels(graph_nx,
-                                positions,
-                                labels=node_labels,
-                                font_size=10,
-                                font_color='black',
-                                verticalalignment='center')
+        nx.draw_networkx_labels(
+            graph_nx,
+            positions,
+            labels=node_labels,
+            font_size=15,
+            font_color="black",
+            verticalalignment="center",
+        )
 
         nx.draw_networkx_edge_labels(
-            graph_nx, positions, edge_labels=edge_labels, font_color='darkblue')
+            graph_nx,
+            positions,
+            edge_labels=edge_labels,
+            font_color="darkblue",
+            font_size=15,
+        )
 
         plt.show()
+
+    def to_nx(self) -> nx.Graph:
+        graph = nx.Graph()
+        graph.add_nodes_from(map_nodes_to_ids(self.nodes))
+        graph.add_edges_from(map_edges_to_ids(self.edges))
+
+        for hyperedge in self.hyper_edges:
+            nodes = hyperedge.nodes
+
+            node_id = "".join([str(n.id) for n in nodes])
+            graph.add_node(node_id)
+
+            edges = [(node_id, node.id) for node in nodes]
+            graph.add_edges_from(edges)
+
+        return graph
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Graph):
+            return False
+
+        return (
+            sorted(self.nodes) == sorted(other.nodes)
+            and sorted(self.edges) == sorted(other.edges)
+            and sorted(self.hyper_edges) == sorted(other.hyper_edges)
+        )
