@@ -103,7 +103,7 @@ class TestP1(unittest.TestCase):
         expected_edges_size = 3
         expected_hyper_edges_size = 1
 
-        graph = self._build_invalid_graph()
+        graph = self._build_incomplete_graph()
         graph.draw_graph()
         p9(graph)
         graph.draw_graph()
