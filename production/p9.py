@@ -25,7 +25,7 @@ def _find_subgraph(graph: Graph) -> Subgraph | None:
     valid_hyper_edges: Iterable[HyperEdge] = (
         hyper_edge
         for hyper_edge in graph.hyper_edges
-        if hyper_edge.label == Label.Q
+        if hyper_edge.label == Label.P
         and all(node.h == 0 for node in hyper_edge.nodes)
         and hyper_edge.r == 1
     )

@@ -25,7 +25,7 @@ class TestP1(unittest.TestCase):
         graph.add_edge(Edge(node5, node1, 0))
 
         graph.add_hyper_edge(
-            HyperEdge([node1, node2, node3, node4, node5], r=1, label=Label.Q)
+            HyperEdge([node1, node2, node3, node4, node5], r=1, label=Label.P)
         )
 
         return graph
@@ -66,7 +66,7 @@ class TestP1(unittest.TestCase):
         graph.add_edge(Edge(node2, node3, 0))
         graph.add_edge(Edge(node1, node3, 0))
 
-        graph.add_hyper_edge(HyperEdge([node1, node2, node3], r=1, label=Label.Q))
+        graph.add_hyper_edge(HyperEdge([node1, node2, node3], r=1, label=Label.P))
 
         return graph
 

@@ -5,6 +5,7 @@ from utils.common import calculate_x, calculate_y
 class Label:
     E = 1
     Q = 2
+    P = 3
 
 
 class Edge:
@@ -21,4 +22,3 @@ class HyperEdge:
         self.r = r
         self.label = label
         self.central_node = Node(calculate_x(nodes), calculate_y(nodes), None)
-
