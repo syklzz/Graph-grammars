@@ -1,5 +1,6 @@
 from model.node import Node
 from utils.common import calculate_x, calculate_y
+from typing import List
 
 
 class Label:
@@ -16,9 +17,8 @@ class Edge:
 
 
 class HyperEdge:
-    def __init__(self, nodes, r, label):
+    def __init__(self, nodes: List[Node], r, label):
         self.nodes = nodes
         self.r = r
         self.label = label
         self.central_node = Node(calculate_x(nodes), calculate_y(nodes), None)
-
