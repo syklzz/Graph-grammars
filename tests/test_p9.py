@@ -6,7 +6,7 @@ from model.edge import Edge, HyperEdge, Label
 from production.p9 import p9
 
 
-class TestP1(unittest.TestCase):
+class TestP9(unittest.TestCase):
     @staticmethod
     def _build_valid_graph() -> Graph:
         graph = Graph()
@@ -38,7 +38,7 @@ class TestP1(unittest.TestCase):
         node2 = Node(0, 2, 0)
         node3 = Node(2, 2, 0)
         node4 = Node(2.5, 1, 0)
-        node5 = Node(2, 0, 1)
+        node5 = Node(2, 0, 0)
         graph.add_nodes([node1, node2, node3, node4, node5])
 
         graph.add_edge(Edge(node1, node2, 0))
@@ -48,7 +48,7 @@ class TestP1(unittest.TestCase):
         graph.add_edge(Edge(node5, node1, 0))
 
         graph.add_hyper_edge(
-            HyperEdge([node1, node2, node3, node4, node5], r=1, label=Label.Q)
+            HyperEdge([node1, node2, node3, node4, node5], r=0, label=Label.P)
         )
 
         return graph

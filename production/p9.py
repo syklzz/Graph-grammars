@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections.abc import Collection, Iterable
-from itertools import combinations
+from functools import partial
+from itertools import combinations, count
 from statistics import mean
 from typing import NamedTuple
 
@@ -58,17 +59,7 @@ def _create_base_graph() -> nx.Graph:
 
 
 def _create_subgraph(edges: Collection[Edge]) -> nx.Graph:
-    class _callgen:
-        def __init__(self) -> None:
-            self._i = 0
-
-        def __call__(self) -> int:
-            i = self._i
-            self._i += 1
-            return i
-
-    remap: dict[int, int] = defaultdict(_callgen())
-
+    remap: dict[int, int] = defaultdict(partial(next, count()))
     subgraph = nx.Graph((remap[edge.n1.id], remap[edge.n2.id]) for edge in edges)
     subgraph.add_edges_from((remap[None], node) for node in [*remap.values()])
     return subgraph
@@ -93,9 +84,9 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
 
         edge_nodes = [edge.n1, edge.n2]
         new_node = Node(
-            mean(n.x for n in edge_nodes),
-            mean(n.y for n in edge_nodes),
-            int(edge.b != 1),
+            x=mean(n.x for n in edge_nodes),
+            y=mean(n.y for n in edge_nodes),
+            h=int(edge.b != 1),
         )
 
         graph.add_node(new_node)
