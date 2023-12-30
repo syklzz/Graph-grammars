@@ -1,6 +1,6 @@
 from typing import List
 from model.node import Node
-from model.edge import Edge, HyperEdge
+from model.edge import Edge, HyperEdge, Label
 import networkx as nx
 
 import matplotlib.pyplot as plt
@@ -48,7 +48,11 @@ class Graph:
 
         for hyper_edge in self.hyper_edges:
             graph_nx.add_node(hyper_edge.central_node)
-            node_labels[hyper_edge.central_node] = f"Q\nr={hyper_edge.r}"
+
+            if hyper_edge.label == Label.Q:
+                node_labels[hyper_edge.central_node] = f"Q\nr={hyper_edge.r}"
+            if hyper_edge.label == Label.P:
+                node_labels[hyper_edge.central_node] = f"P\nr={hyper_edge.r}"
             positions[hyper_edge.central_node] = (
                 hyper_edge.central_node.x, hyper_edge.central_node.y)
             node_colors.append('red')

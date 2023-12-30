@@ -6,6 +6,7 @@ from typing import List
 class Label:
     E = 1
     Q = 2
+    P = 3
 
 
 class Edge:
