@@ -80,7 +80,11 @@ def complex_graph_with_match():
     
 
 
+<<<<<<< HEAD
 def graph_with_no_match():
+=======
+def complex_graph_no_match():
+>>>>>>> 35ec43b (P3)
     """
     A square with a pentagon attached to it.
     Hanging nodes in between the square.
@@ -215,7 +219,14 @@ if __name__=="__main__":
     print("This module is not meant to be executed directly.")
     print("But if you insist, here is a demo:")
     
+<<<<<<< HEAD
     for graph in [exact_left_side(), complex_graph_with_match(), graph_with_no_match(), graph_wrong_label(), graph_wrong_hanging_node(), graph_wrong_r()]:
         graph.draw_graph()
         p3(graph)
         graph.draw_graph()
+=======
+    for graph in [exact_left_side(), complex_graph_with_match(), complex_graph_no_match(), graph_wrong_label(), graph_wrong_hanging_node(), graph_wrong_r()]:
+        graph.draw_graph()
+        p3(graph)
+        graph.draw_graph()
+>>>>>>> 35ec43b (P3)
