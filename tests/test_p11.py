@@ -105,7 +105,3 @@ class TestP11(unittest.TestCase):
         self.assertTrue(len(graph.nodes) == expected_nodes_size)
         self.assertTrue(len(graph.edges) == expected_edges_size)
         self.assertTrue(len(graph.hyper_edges) == expected_hyper_edges_size)
-<<<<<<< HEAD
-=======
-        
->>>>>>> 4b85404 (Production 11 done :tada:)
