@@ -172,7 +172,7 @@ def _get_nodes_from_edges(edges: List[Edge]) -> Set[Node]:
 
 if __name__=="__main__":
     names = ["left side of P3", "complex graph with match", "complex graph without match", "Wrong label", "Wrong r", "Wrong h"]
-    test_graphs = [exact_left_side(), complex_graph_with_match(), complex_graph_no_match(), graph_wrong_label(), graph_wrong_r(), graph_wrong_hanging_node()]
+    test_graphs = [exact_left_side(), complex_graph_with_match(), graph_with_no_match(), graph_wrong_label(), graph_wrong_r(), graph_wrong_hanging_node()]
     for graph, name in zip(test_graphs, names):
         print(f"Name: {name}")
         graph.draw_graph()

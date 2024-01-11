@@ -58,7 +58,7 @@ def complex_graph_with_match():
     return graph
 
 
-def complex_graph_no_match():
+def graph_with_no_match():
     """ A square with a pentagon attached to it but with first node removed.
     
         2  - 5
@@ -135,7 +135,7 @@ if __name__=="__main__":
     print("This module is not meant to be executed directly.")
     print("But if you insist, here is a demo:")
     
-    for graph in [exact_left_side(), complex_graph_with_match(), complex_graph_no_match(), graph_wrong_label(), graph_wrong_r()]:
+    for graph in [exact_left_side(), complex_graph_with_match(), graph_with_no_match(), graph_wrong_label(), graph_wrong_r()]:
         graph.draw_graph()
         print("Hyper edges:")
         for hyper_edge in graph.hyper_edges:

@@ -47,7 +47,7 @@ class TestP7(unittest.TestCase):
         expected_hyper_edges_size = 1
         expected_r1 = 0
 
-        graph = graphs_p7.complex_graph_no_match()
+        graph = graphs_p7.graph_with_no_match()
         graph.draw_graph()
         p7(graph)
         graph.draw_graph()
