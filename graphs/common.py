@@ -2,6 +2,9 @@ from model.edge import Edge, HyperEdge, Label
 from model.graph import Graph
 from model.node import Node
 
+def empty_graph():
+    return Graph()
+
 
 def left_side_of_p1():
     graph = Graph()
