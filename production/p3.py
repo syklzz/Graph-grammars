@@ -9,7 +9,7 @@ from typing import List, NamedTuple, Set
 
 from model.node import Node
 
-from graphs.graphs_p3 import * ##TODO remove
+from graphs.graphs_p3 import *
 
 
 class Subgraph(NamedTuple):
@@ -138,6 +138,9 @@ def _apply_production(graph: Graph, subgraph: Subgraph) -> None:
         label=Label.Q,
         ) for node in hyper_edge.nodes]    
     _add_hyper_edges_to_graph(graph, new_hyper_edges)
+
+    for hanging_node in old_hanging_nodes:
+        hanging_node.h = 0
     
 
 def _create_derived_node(nodes: List[Node], h: int) -> Node:

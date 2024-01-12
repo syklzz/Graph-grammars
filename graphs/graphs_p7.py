@@ -13,7 +13,7 @@ def exact_left_side():
     node1 = Node(0, 0, 0)
     node2 = Node(2, 0, 0)
     node3 = Node(2, 2, 0)
-    node4 = Node(0, 2, 0)
+    node4 = Node(0, 2, 1)
 
     graph.add_nodes([node1, node2, node3, node4])
 
@@ -43,15 +43,15 @@ def complex_graph_with_match():
 
     graph.add_nodes([node1, node2, node3, node4, node5, node6, node7])
 
-    graph.add_edge(Edge(node1, node2, "B"))
-    graph.add_edge(Edge(node3, node2, "B"))
-    graph.add_edge(Edge(node4, node3, "B"))
-    graph.add_edge(Edge(node4, node1, "B"))
+    graph.add_edge(Edge(node1, node2, 0))
+    graph.add_edge(Edge(node3, node2, 0))
+    graph.add_edge(Edge(node4, node3, 0))
+    graph.add_edge(Edge(node4, node1, 1))
 
-    graph.add_edge(Edge(node2, node5, "B"))
-    graph.add_edge(Edge(node5, node6, "B"))
-    graph.add_edge(Edge(node6, node7, "B"))
-    graph.add_edge(Edge(node7, node3, "B"))
+    graph.add_edge(Edge(node2, node5, 0))
+    graph.add_edge(Edge(node5, node6, 0))
+    graph.add_edge(Edge(node6, node7, 0))
+    graph.add_edge(Edge(node7, node3, 0))
     
     graph.add_hyper_edge(HyperEdge([node1, node2, node3, node4], 0, Label.Q))
     graph.add_hyper_edge(HyperEdge([node2, node3, node5, node6, node7], 0, Label.P))

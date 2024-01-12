@@ -110,6 +110,7 @@ def _create_subgraph(edges: List[Edge], corner_nodes: List[Node]) -> nx.Graph:
 def _apply_production(graph: Graph, subgraph: Subgraph):
     hyper_edge = subgraph.hyper_edge
     edges = subgraph.edges
+    old_nodes = _get_nodes_from_edges(edges)
 
     graph.hyper_edges.remove(hyper_edge)
 
@@ -126,9 +127,9 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
     for edge in edges:
         if edge.n1.h == 1:
             new_edge = Edge(edge.n1, middle_node, 0)
+            new_hyper_edges[edge.n2.id].append(edge.n1)
             if not any(e.n1 == new_edge.n1 and e.n2 == new_edge.n2 and e.b == new_edge.b for e in graph.edges):
                 graph.add_edge(new_edge)
-                new_hyper_edges[edge.n2.id].append(edge.n1)
             continue
         elif edge.n2.h == 1:
             new_hyper_edges[edge.n1.id].append(edge.n2)
@@ -156,3 +157,6 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
 
     for hyper_edges_nodes in new_hyper_edges.values():
         graph.add_hyper_edge(HyperEdge(hyper_edges_nodes, 0, Label.Q))
+
+    for node in old_nodes:
+        node.h = 0
