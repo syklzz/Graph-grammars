@@ -33,11 +33,13 @@ def validate_attributes(hyper_edge):
 
 def create_subgraph(hyper_edge_nodes, edges):
     subgraph = nx.Graph()
-    subgraph.add_nodes_from(map_nodes_to_ids(hyper_edge_nodes))
+    node_ids = map_nodes_to_ids(hyper_edge_nodes)
+    subgraph.add_nodes_from(node_ids)
     subgraph.add_edges_from(map_edges_to_ids(edges))
-    subgraph.add_node(4)
-    for i in range(len(hyper_edge_nodes)):
-        subgraph.add_edge(4, i)
+    hyper_edge_node_id = max(node_ids) + 1
+    subgraph.add_node(hyper_edge_node_id)
+    for v in hyper_edge_nodes:
+        subgraph.add_edge(hyper_edge_node_id, v.id)
     return subgraph
 
 
