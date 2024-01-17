@@ -1,19 +1,13 @@
 from model.edge import Edge, HyperEdge
 from model.graph import Graph
 from model.node import Node
-
+from graphs.derive_base import derive_base
+from production.p1 import p1
+from production.p7 import p7
 
 if __name__ == '__main__':
-    g = Graph()
-    node1 = Node(0, 0, 0)
-    node2 = Node(2, 2, 0)
-    node3 = Node(2, 0, 0)
-    node4 = Node(0, 2, 0)
-    g.add_nodes([node1, node2, node3, node4])
-    g.add_edge(Edge(node1, node3, 'B1'))
-    g.add_edge(Edge(node3, node2, 'B2'))
-    g.add_edge(Edge(node1, node4, 'B3'))
-    g.add_edge(Edge(node2, node4, 'B4'))
-
-    g.add_hyper_edge(HyperEdge([node1, node2, node3, node4], 8, 'x'))
+    g = derive_base()
+    p7(g)
+    p1(g)
+    p7(g)
     g.draw_graph()
