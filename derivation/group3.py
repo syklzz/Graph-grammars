@@ -7,8 +7,9 @@ def derive():
     g = derive_base()
     p7(g)
     p1(g)
-    p7(g)
+    p7(g, [9, 12, 15, 16])
     g.draw_graph()
+
 
 if __name__ == '__main__':
     derive()
