@@ -25,6 +25,13 @@ def derive_base():
         graph.add_edge(Edge(inner_nodes[i-1], inner_nodes[i], 1))
         graph.add_edge(Edge(outer_nodes[i], inner_nodes[i], 1))
 
+    graph.add_hyper_edge(HyperEdge([node2, node3, node7, node8], 0, Label.Q))
+    graph.add_hyper_edge(HyperEdge([node0, node1, node6, node5], 0, Label.Q))
+    graph.add_hyper_edge(HyperEdge([node1, node2, node7, node6], 0, Label.Q))
+    graph.add_hyper_edge(HyperEdge([node9, node8, node3, node4], 0, Label.Q))
+    graph.add_hyper_edge(HyperEdge([node0, node5, node9, node4], 0, Label.Q))
+    graph.add_hyper_edge(HyperEdge([node5, node6, node7, node8, node9], 0, Label.P))
+
     return graph
 
 
