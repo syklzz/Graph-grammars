@@ -21,9 +21,9 @@ def derive_base():
 
     graph.add_nodes(outer_nodes + inner_nodes)
     for i in range(len(outer_nodes)):
-        graph.add_edge(Edge(outer_nodes[i-1], outer_nodes[i], 0))
-        graph.add_edge(Edge(inner_nodes[i-1], inner_nodes[i], 1))
-        graph.add_edge(Edge(outer_nodes[i], inner_nodes[i], 1))
+        graph.add_edge(Edge(outer_nodes[i-1], outer_nodes[i], 1))
+        graph.add_edge(Edge(inner_nodes[i-1], inner_nodes[i], 0))
+        graph.add_edge(Edge(outer_nodes[i], inner_nodes[i], 0))
 
     graph.add_hyper_edge(HyperEdge([node2, node3, node7, node8], 0, Label.Q))
     graph.add_hyper_edge(HyperEdge([node0, node1, node6, node5], 0, Label.Q))
