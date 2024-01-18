@@ -85,10 +85,11 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
 
     for edge in edges:
         if edge.n1.h == 1:
-            graph.add_edge(Edge(edge.n1, middle_node, 0))
+            h_node = edge.n1
             new_hyper_edges[edge.n2.id].append(edge.n1)
             continue
         elif edge.n2.h == 1:
+            h_node = edge.n2
             new_hyper_edges[edge.n1.id].append(edge.n2)
             continue
 
@@ -109,5 +110,8 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
         new_hyper_edges[edge.n1.id].append(new_node)
         new_hyper_edges[edge.n2.id].append(new_node)
 
+    h_node.h = 0
+    graph.add_edge(Edge(h_node, middle_node, 0))
+
     for hyper_edges_nodes in new_hyper_edges.values():
-        graph.add_hyper_edge(HyperEdge(hyper_edges_nodes, 0, Label.P))
+        graph.add_hyper_edge(HyperEdge(hyper_edges_nodes, 0, Label.Q))
