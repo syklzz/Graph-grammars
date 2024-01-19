@@ -25,8 +25,4 @@ def derive():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     derive()
-=======
-    derive()
->>>>>>> 93b0dcf (d2 start)
