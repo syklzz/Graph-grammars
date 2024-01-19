@@ -9,7 +9,7 @@ class Node:
         if not isinstance(other, Node):
             return False
 
-        return self.x == other.x and self.y == other.y and self.h == other.h
+        return self.x == other.x and self.y == other.y and self.h == other.h and self.id == other.id
 
     def __hash__(self) -> int:
         return hash((self.x, self.y, self.h, self.id))
