@@ -23,9 +23,10 @@ class Graph:
             self.add_node(node)
 
     def add_node(self, node: Node) -> None:
-        node.id = self.new_node_id
+        if node.id is None:
+            node.id = self.new_node_id
         self.nodes.append(node)
-        self.new_node_id += 1
+        self.new_node_id = max([node.id for node in self.nodes]) + 1
 
     def add_hyper_edge(self, hyper_edge: HyperEdge) -> None:
         self.hyper_edges.append(hyper_edge)
