@@ -2,6 +2,7 @@ from model.edge import Edge, HyperEdge, Label
 from model.graph import Graph
 from model.node import Node
 from production.p16 import p16
+from production.p2 import p2
 from production.p8 import p8
 from production.p9 import p9
 
@@ -17,7 +18,6 @@ def make_ex2_graph():
     g.add_nodes([node1, node2, node3, node4])
 
     g.add_edge(Edge(node1, node2, 0))
-    g.add_edge(Edge(node2, node3, 0))
     g.add_edge(Edge(node3, node4, 0))
     g.add_edge(Edge(node4, node1, 0))
 
@@ -44,7 +44,11 @@ def make_ex2_graph():
     g.add_edge(Edge(node1, node5, 0))
     g.add_edge(Edge(node4, node9, 0))
     g.add_edge(Edge(node8, node3, 0))
+    # g.add_edge(Edge(node8, node3, 0))
     g.add_edge(Edge(node6, node2, 0))
+    g.add_edge(Edge(node2, node10, 0))
+    g.add_edge(Edge(node3, node10, 0))
+    
 
     # dodawanie hiperkrawedzi - na razie wszystkie nieoznaczone do łamania
     g.add_hyper_edge(HyperEdge([node1, node5, node9, node4], 0, Label.Q))
@@ -73,6 +77,15 @@ if __name__ == '__main__':
     hyper_edge = find_hyper_edges_with_label_and_ids(graph, Label.Q, [10, 13, 6, 12])
     hyper_edge.r = 1
 
+    graph.draw_graph()
+    p8(graph)
+    p8(graph)
+    graph.draw_graph()
+
+    p2(graph)
+    graph.draw_graph()
+
+
     # [bug with P8]
     # line 21, in p8
     #   if mid_node.h == 1:
@@ -80,6 +93,4 @@ if __name__ == '__main__':
     hyper_edge = find_hyper_edges_with_label_and_ids(graph, Label.Q, [])
 
 
-
-
-    graph.draw_graph()
+    # graph.draw_graph()
