@@ -1,5 +1,5 @@
 from model.graph import Graph
-from model.edge import Edge, Label
+from model.edge import Label, HyperEdge
 
 
 def p7(graph: Graph) -> None:
@@ -11,5 +11,5 @@ def p7(graph: Graph) -> None:
             hyper_edge.r = 1
             return
         
-def _should_break(edge: Edge) -> bool:
+def _should_break(edge: HyperEdge) -> bool:
     return edge.label == Label.Q and len(edge.nodes) == 4 and edge.r == 0

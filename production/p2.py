@@ -12,6 +12,18 @@ def p2(graph):
         apply_production(graph, subgraph)
 
 
+def find_isomorphic_subgraph_for_d4(graph, square):
+    for hyper_edge in graph.hyper_edges:
+        if hyper_edge is square:
+            if hyper_edge.label == Label.Q:
+                for edges in list(combinations(graph.edges, 5)):
+                    for hanging_node in graph.nodes:
+                        if hanging_node not in hyper_edge.nodes and validate_attributes(hyper_edge, hanging_node) \
+                                and validate_edges(edges, hyper_edge.nodes, hanging_node):
+                            return hyper_edge, edges, hanging_node
+    return None, None, None
+
+
 def find_isomorphic_subgraph(graph):
     for hyper_edges in graph.hyper_edges:
         if hyper_edges.label == Label.Q:
