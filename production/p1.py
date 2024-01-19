@@ -16,8 +16,12 @@ def find_isomorphic_subgraph(graph):
     for hyper_edge in graph.hyper_edges:
         if hyper_edge.label == Label.Q:
             for edges in list(combinations(graph.edges, 4)):
-                if validate_edges(edges, hyper_edge.nodes) and validate_attributes(hyper_edge) \
-                        and nx.is_isomorphic(create_subgraph(hyper_edge.nodes, edges), create_base_graph()):
+                edges_bool = validate_edges(edges, hyper_edge.nodes)
+                atributes = validate_attributes(hyper_edge)
+                created_subgraph = create_subgraph(hyper_edge.nodes, edges)
+                is_isomorphic = nx.is_isomorphic(created_subgraph, create_base_graph())
+                
+                if edges_bool and atributes and is_isomorphic:
                     return hyper_edge, edges
     return None
 
