@@ -1,7 +1,6 @@
 from model.edge import Edge, HyperEdge, Label
 from model.graph import Graph
 from model.node import Node
-from production.p3 import p3
 
 
 def exact_left_side():
@@ -209,13 +208,3 @@ def graph_wrong_r():
     g.add_hyper_edge(HyperEdge([n1, n2, n3, n4], wrong_r, Label.Q))    
     
     return g
-    
-
-if __name__=="__main__":
-    print("This module is not meant to be executed directly.")
-    print("But if you insist, here is a demo:")
-    
-    for graph in [exact_left_side(), complex_graph_with_match(), graph_with_no_match(), graph_wrong_label(), graph_wrong_hanging_node(), graph_wrong_r()]:
-        graph.draw_graph()
-        p3(graph)
-        graph.draw_graph()
