@@ -1,11 +1,14 @@
-from graphs import derive_base
+# from graphs import derive_base
 from graphs.derive_base import derive_base
+
 from production.p1 import p1
 from production.p10 import p10
-# from production.p3 import p3
+
+from production.p3 import p3
 from production.p7 import p7
 from production.p8 import p8
 from production.p17 import p17
+
 
 def derive():
     g = derive_base()
@@ -26,5 +29,5 @@ def derive():
     # g.draw_graph()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     derive()
