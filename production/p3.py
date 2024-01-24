@@ -34,8 +34,8 @@ def _find_isomorphic_subgraph(graph: Graph) -> Subgraph | None:
         hyper_edge
         for hyper_edge in graph.hyper_edges
         if hyper_edge.label == Label.Q
-        and len(hyper_edge.nodes) == 4 
-        and hyper_edge.r == 1 
+        and hyper_edge.r == 1
+        and len(hyper_edge.nodes) == 4
         and all(node.h == 0 for node in hyper_edge.nodes)
     ]
 

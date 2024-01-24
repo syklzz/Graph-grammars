@@ -30,7 +30,7 @@ class Graph:
     def add_hyper_edge(self, hyper_edge: HyperEdge) -> None:
         self.hyper_edges.append(hyper_edge)
 
-    def draw_graph(self):
+    def draw_graph(self, figname: str | None = None):
         graph_nx = nx.Graph()
         node_labels = {}
         node_colors = []
@@ -73,6 +73,8 @@ class Graph:
 
         # Draw the graph
         plt.figure(figsize=(24, 18))
+        plt.axis("off")
+        plt.tight_layout()
 
         nx.draw_networkx_nodes(
             graph_nx, positions, node_color=node_colors, node_size=500
@@ -96,7 +98,10 @@ class Graph:
             font_size=15,
         )
 
-        plt.show()
+        if figname is None:
+            plt.show()
+        else:
+            plt.savefig(figname)
 
     def to_nx(self) -> nx.Graph:
         graph = nx.Graph()
