@@ -1,6 +1,7 @@
 from model.edge import Edge, HyperEdge, Label
 from model.graph import Graph
 from model.node import Node
+from production.p1 import apply_production
 from production.p16 import p16
 from production.p2 import p2, apply_production as apply_p2_production
 from production.p3 import p3
@@ -90,34 +91,58 @@ def p2(graph: Graph, hanging_id, node_ids):
         except StopIteration:
             continue
 
-    apply_p2_production(graph, (hyper_edge, edges, hanging_node)) 
+    apply_p2_production(graph, (hyper_edge, edges, hanging_node))
+
+
+def p1(graph: Graph, hanging_id, node_ids):
+    hyper_edge = find_hyper_edges_with_label_and_ids(graph, Label.Q, node_ids)
+    hanging_node = next(n for n in graph.nodes if n.id == hanging_id)
+
+    nodes = []
+    for id in node_ids:
+        nodes.append(next(n for n in graph.nodes if n.id == id))
+
+    nodes.append(hanging_node)
+
+    edges = []
+    for n, m in combinations(nodes, 2):
+        try:
+            edge = next(e for e in graph.edges if ((e.n1 == n and e.n2 == m) or (e.n2 == n and e.n1 == m)))
+            edges.append(edge)
+        except StopIteration:
+            continue
+
+    apply_production(graph, (hyper_edge, edges, hanging_node))
+
 
 
 if __name__ == "__main__":
     graph: Graph = make_ex2_graph()
 
     p16(graph)
+    # graph.draw_graph()
     p9(graph)
+    # graph.draw_graph()
     hyper_edge = find_hyper_edges_with_label_and_ids(graph, Label.Q, [10, 13, 6, 12])
     hyper_edge.r = 1
-
+    # graph.draw_graph()
     p8(graph)
     p8(graph)
-    graph.draw_graph()
+    # graph.draw_graph()
 
     p2(graph, 13, [7, 2, 9, 6])
-    graph.draw_graph()
-    
+    # graph.draw_graph()
+
     p3(graph)
-    graph.draw_graph()
-
-
 
     # p2(graph, 12, [6, 9, 1, 5])
     # graph.draw_graph()
 
     # graph.draw_graph()
-
+    graph.draw_graph()
     hyper_edge = find_hyper_edges_with_label_and_ids(graph, Label.Q, [])
+
+    # p1(graph, ) to finish
+    graph.draw_graph()
 
     # graph.draw_graph()
