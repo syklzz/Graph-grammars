@@ -133,6 +133,9 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
             continue
         elif edge.n2.h == 1:
             new_hyper_edges[edge.n1.id].append(edge.n2)
+            new_edge = Edge(edge.n2, middle_node, 0)
+            if not any(e.n1 == new_edge.n1 and e.n2 == new_edge.n2 and e.b == new_edge.b for e in graph.edges):
+                graph.add_edge(new_edge)
             continue
 
         # Check if the edge already exists in the graph
@@ -160,3 +163,5 @@ def _apply_production(graph: Graph, subgraph: Subgraph):
 
     for node in old_nodes:
         node.h = 0
+        
+    

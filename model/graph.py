@@ -31,7 +31,7 @@ class Graph:
     def add_hyper_edge(self, hyper_edge: HyperEdge) -> None:
         self.hyper_edges.append(hyper_edge)
 
-    def draw_graph(self):
+    def draw_graph(self, filepath: str = None):
         graph_nx = nx.Graph()
         node_labels = {}
         node_colors = []
@@ -97,7 +97,10 @@ class Graph:
             font_size=15,
         )
 
-        plt.show()
+        if filepath is not None: 
+            plt.savefig(filepath)
+        else:
+            plt.show()
 
     def to_nx(self) -> nx.Graph:
         graph = nx.Graph()

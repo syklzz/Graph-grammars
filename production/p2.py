@@ -35,10 +35,13 @@ def validate_attributes(hyper_edge, hanging_node):
 
 def create_subgraph(hyper_edge_nodes, edges):
     subgraph = nx.Graph()
-    subgraph.add_nodes_from(map_nodes_to_ids(hyper_edge_nodes))
+    HYPER_NODE_ID = -1
+    nodes_ids = map_nodes_to_ids(hyper_edge_nodes)
+    
+    subgraph.add_nodes_from(nodes_ids)
     subgraph.add_edges_from(map_edges_to_ids(edges))
-    for i in range(len(hyper_edge_nodes)):
-        subgraph.add_edge(5, i)
+    for i in nodes_ids:
+        subgraph.add_edge(HYPER_NODE_ID, i)
     return subgraph
 
 

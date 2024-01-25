@@ -14,6 +14,10 @@ class Subgraph(NamedTuple):
     hyper_edge: HyperEdge
     nodes: Set[Node]
     edges: List[Edge]
+    
+class SimpleEdge(NamedTuple):
+    n1_id: int
+    n2_id: int
 
 
 def p3(graph: Graph) -> None:
@@ -23,6 +27,7 @@ def p3(graph: Graph) -> None:
     subgraph = _find_isomorphic_subgraph(graph)
     if subgraph is not None:
         _apply_production(graph, subgraph)
+        
         
 def _find_isomorphic_subgraph(graph: Graph) -> Subgraph | None:
     valid_hyper_edges: List[HyperEdge] = [
@@ -34,14 +39,69 @@ def _find_isomorphic_subgraph(graph: Graph) -> Subgraph | None:
         and all(node.h == 0 for node in hyper_edge.nodes)
     ]
     
+    # print("Found valid hyper edges:", valid_hyper_edges)
     subgraphs = (
             Subgraph(hyper_edge, _get_nodes_from_edges(edges), edges)
             for hyper_edge in valid_hyper_edges
-            for edges in combinations(graph.edges, 6)
+            for edges in _get_valid_edges(graph, hyper_edge.nodes)
             if _validate_subgraph(edges, hyper_edge.nodes)
     ) 
     return next(subgraphs, None)
         
+
+def _get_valid_edges(graph: Graph, corner_nodes: List[Node]) -> List[Edge]:
+    simple_edges = _edges_to_simple_edges(graph.edges) 
+       
+    corner_edges = [_get_edge(simple_edges, corner_node1, corner_node2) 
+                    for corner_node1 in corner_nodes
+                    for corner_node2 in corner_nodes
+                    if corner_node1.id > corner_node2.id 
+                    and _does_edge_exist(simple_edges, corner_node1, corner_node2)]
+    
+    if len(corner_edges) != 2:
+        return [] 
+    
+    count_nodes = {node: 0 for node in corner_nodes}
+    for edge in corner_edges:
+        count_nodes[edge.n1] += 1
+        count_nodes[edge.n2] += 1
+    
+    nodes_with_one_edge_found = [node for node, count in count_nodes.items() if count == 1]
+    if len(nodes_with_one_edge_found) != 2:
+        return []
+    
+    nodes_without_edge_found = [node for node, count in count_nodes.items() if count == 0]
+    if len(nodes_without_edge_found) != 1:
+        return []
+        
+    n_a = nodes_without_edge_found[0]
+    n_b1, n_b2 = tuple(nodes_with_one_edge_found)
+    
+    hanging_nodes = [n_h for n_h in _get_hanging_nodes(graph.nodes) if _does_edge_exist(simple_edges, n_h, n_a)]
+    # valid_combinations = [combination for combination in combinations(hanging_nodes, 2) 
+    #                       if _does_edge_exist(simple_edges, combination[0], n_b1) or _does_edge_exist(simple_edges, combination[0], n_b2)]
+    hanging_node_edges = []
+    for n_h in hanging_nodes:
+        hanging_node_edges.append(_get_edge(simple_edges, n_h, n_a))
+        if _does_edge_exist(simple_edges, n_h, n_b1):
+            hanging_node_edges.append(_get_edge(simple_edges, n_h, n_b1))
+        elif _does_edge_exist(simple_edges, n_h, n_b2):
+            hanging_node_edges.append(_get_edge(simple_edges, n_h, n_b2))
+        
+    return [corner_edges + hanging_node_edges]
+
+
+def _edges_to_simple_edges(edges: List[Edge]) -> dict[SimpleEdge, Edge]:
+    return {SimpleEdge(edge.n1.id, edge.n2.id): edge for edge in edges}
+
+def _does_edge_exist(edges: dict[SimpleEdge, Edge], n1: Node, n2: Node) -> bool:
+    return SimpleEdge(n1.id, n2.id) in edges or SimpleEdge(n2.id, n1.id) in edges
+
+def _get_edge(edges: dict[SimpleEdge, Edge], n1: Node, n2: Node) -> Edge:
+    return edges[SimpleEdge(n1.id, n2.id)] if SimpleEdge(n1.id, n2.id) in edges else edges[SimpleEdge(n2.id, n1.id)]
+
+def _get_hanging_nodes(nodes: list[Node]) -> list[Node]:
+    return [node for node in nodes if node.h == 1]
 
 def _validate_subgraph(edges: List[Edge], corner_nodes: List[Node]) -> bool:
     edge_nodes = _get_nodes_from_edges(edges)
